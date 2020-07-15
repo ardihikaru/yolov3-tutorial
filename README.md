@@ -2,23 +2,23 @@
 Tutorial how to use YOLOv3
 
 ### To dos 
-- [ ] Clone [YOLOv3 Project](https://github.com/ultralytics/yolov3) 
-- [ ] Refactor the codes
-    - [ ] Make main file to run: `main.py`
-    - [ ] Make YOLOv3 Class (Easier to add & integrate another object detection 
+- [x] Clone [YOLOv3 Project](https://github.com/ultralytics/yolov3) 
+- [x] Refactor the codes
+    - [x] Make main file to run: `main.py`
+    - [x] Make YOLOv3 Class (Easier to add & integrate another object detection 
             algorithms in the future)
-- [ ] Unit Testing
-    - [ ] Run test with `1 Image` as the input
-    - [ ] Run test with `1 Folder of images` as the input
-    - [ ] Run test with `video` as the input
-    - [ ] Run test with `RTSP/RTMP real-time video streaming` as the input
+- [x] Unit Testing
+    - [x] Run test with `1 Image` as the input
+    - [x] Run test with `1 Folder of images` as the input
+    - [x] Run test with `video` as the input
+    - [x] Run test with `RTSP/RTMP real-time video streaming` as the input
 - [ ] Additional features
-    - [ ] Save raw images into a specific folder: `./export/images/raw/<datetime>`
-    - [ ] Save bbox images into a specific folder: `./export/images/bbox/<datetime>`
-    - [ ] Save cropped (bbox) images into a specific folder: `./export/images/crop/<datetime>`
+    - [x] Save raw images into a specific folder: `./export/images_txt/<datetime>/raw/`
+    - [x] Save bbox images into a specific folder: `./export/images_txt/<datetime>/bbox/`
+    - [x] Save cropped (bbox) images into a specific folder: `./export/images_txt/<datetime>/crop/`
     - [ ] Show real-time video: `Raw images` (OpenCV) 
     - [ ] Show real-time video: `BBox images` (OpenCV) 
-    - [ ] Export bbox coordinates
+    - [x] Export bbox coordinates: `./export/images_txt/<datetime>/txt/`
     - [ ] Calculation of mAP
     - [ ] Documentation to train a custom dataset
 
@@ -42,7 +42,22 @@ Tutorial how to use YOLOv3
     - `$ pip install pycocotools==2.0.0` (It needs to be installed separately)
 
 ### How to use 
-// TBD
+1. Finish the installation procedure
+2. Run the `main.py` file. It has several configuration. Here are some example:
+    - Input as `list of images` in a specific folder
+        - Simple command: `$ python main.py --source-type-folder`
+        - Change folder source: `$ python main.py --source-type-folder --source "data/images/sample-4-frames/"`
+        - Export all the results (Raw images, bbox images, cropped images/bbox img, bbox information): 
+            `$ python main.py --source-type-folder --dump-raw-img --dump-bbox-img --dump-crop-img --save-txt`
+    - Input as `video file` or `video stream (RTSP/RTMP)`
+        - Simple command: `$ python main.py`
+        - Change video file source: `$ python main.py --source "data/videos/customTest_MIRC-Roadside-5s.mp4"`
+        - Change video stream (RTMP) source: `$ python main.py --source "rtmp://<your_ip>"`
+        - Change video stream (RTSP) source: `$ python main.py --source "rtsp://<your_ip>"`
+        - Stop after processing N frames (e.g.: `N=2`): `$ python main.py --is_limited --max_frames 2`
+        - Export all the results (Raw images, bbox images, cropped images/bbox img, bbox information): 
+            `$ python main.py --dump-raw-img --dump-bbox-img --dump-crop-img --save-txt"`
+    
 
 ### Contributors 
 1. Muhammad Febrian Ardiansyah 
@@ -51,7 +66,8 @@ Tutorial how to use YOLOv3
 [bitbucket](https://bitbucket.org/ardihikaru3/))
 
 ### Important resources 
-// TBD
+1. Git issues
+    - [Removed a file from the entire commit history](https://myopswork.com/how-remove-files-completely-from-git-repository-history-47ed3e0c4c35)
 
 ### License 
 [MIT](https://choosealicense.com/licenses/mit/)
