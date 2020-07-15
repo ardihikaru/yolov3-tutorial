@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore MAC-related files
+*.DS_Store
+
+# Ignore YOLO's weights files
+*.weights
+
 # Editor
 .idea/
 
