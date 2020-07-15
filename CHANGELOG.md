@@ -1,3 +1,8 @@
+## 1.1.0 (July 15, 2020)
+  - Merge branch 'feature/readmev2' into develop
+  - updated readme files
+  - Merge branch 'release-1.0' into develop
+
 ## 1.0 (July 15, 2020)
   - added missing main.py (due to previous critical issue)
   - Merge branch 'feature/sync-data' into develop
