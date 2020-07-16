@@ -5,9 +5,8 @@ from yolo_app.app import YOLOApp
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    # To define input source type: "folder" or "stream"; The default is "stream"
-    parser.add_argument('--no-cv-out', dest='cv_out', help="Enable/disable CV Out results")
-    parser.set_defaults(cv_out=True)
+    # Enable CV out if enabled!
+    parser.add_argument('--enable-cv-out', dest='cv_out', action='store_true', help="Enable/disable CV Out results")
 
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
