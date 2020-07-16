@@ -43,12 +43,15 @@ if __name__ == "__main__":
     parser.add_argument("--file_ext", type=str, default=".png", help="source folder extension (png, jpg, ...)")
 
     # parser.add_argument("--source", type=str, default="data/images/sample-1-frame/", help="source")
-    parser.add_argument("--source", type=str, default="data/images/sample-4-frames/", help="source")
-    # parser.add_argument("--source", type=str, default="data/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
+    # parser.add_argument("--source", type=str, default="data/images/sample-4-frames/", help="source")
+    parser.add_argument("--source", type=str, default="data/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
     # parser.add_argument("--source", type=str, default="rtmp://140.113.86.92/live/demo", help="source")
 
     # To define the ROOT location to save any output results: Images, txt, graph, etc.
     parser.add_argument("--output", type=str, default="outputs/", help="path to export any results")
+
+    # To enable/disable auto restart (Input as RTSP/RTMP)
+    parser.add_argument('--auto-restart', dest='is_auto_restart', action='store_true', help="To automatically restart")
 
     # Saving raw images
     parser.add_argument('--dump-raw-img', dest='dump_raw_img', action='store_true',
@@ -63,7 +66,6 @@ if __name__ == "__main__":
     # Saving crop images
     parser.add_argument('--dump-crop-img', dest='dump_crop_img', action='store_true',
                         help="Enable/disable crop images dump")
-    # parser.set_defaults(crop_img_dump=True)
 
     # Saved txt format: # Source https://github.com/Cartucho/mAP#running-the-code
     parser.add_argument('--txt_format', type=str, default='cartucho', help='Output Txt Format')
@@ -76,4 +78,4 @@ if __name__ == "__main__":
     opt = parser.parse_args()
     print(opt)
 
-    YOLOApp(opt).run()
+    # YOLOApp(opt).run()

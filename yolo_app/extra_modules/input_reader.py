@@ -46,8 +46,8 @@ class InputReader:
         """
         self.cap = FileVideoStream(self.opt.source).start()  # Thread-based video capture
 
-    def _stop_stream_listener(self):
-        """
-            Release resources
-        """
-        self.cap.release()
+    # def _stop_stream_listener(self):
+    #     """
+    #         Release resources
+    #     """
+    #     self.cap.release()
