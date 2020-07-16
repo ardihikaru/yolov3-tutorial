@@ -11,7 +11,9 @@ if __name__ == "__main__":
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
-    parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+    # parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+    # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
+    parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
     parser.add_argument('--conf-thres', type=float, default=0.1, help='object confidence threshold')
     # parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
     # parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
