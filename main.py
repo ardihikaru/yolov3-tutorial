@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # To define the ROOT location to save any output results: Images, txt, graph, etc.
     parser.add_argument("--output", type=str, default="outputs/", help="path to export any results")
 
-    # To enable/disable auto restart (Input as RTSP/RTMP)
+    # To enable/disable auto restart (Input as Video file or Streaming with RTSP/RTMP)
     parser.add_argument('--auto-restart', dest='is_auto_restart', action='store_true', help="To automatically restart")
 
     # Saving raw images
@@ -77,4 +77,4 @@ if __name__ == "__main__":
     opt = parser.parse_args()
     print(opt)
 
-    # YOLOApp(opt).run()
+    YOLOApp(opt).run()

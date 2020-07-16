@@ -64,12 +64,12 @@ class YOLOApp(InputReader):
             except Exception as e:
                 # print(" ---- e:", e)
 
-                if not self.opt.auto_restart:
+                if not self.opt.is_auto_restart:
                     print("\nStopping the system (3 seconds delay) . . .")
                     time.sleep(3)
                     self.is_running = False
                 # Read this code ONLY when (1) is streaming through (2) RTSP/RTMP protocol
-                elif self.opt.is_source_stream and self.opt.auto_restart:
+                elif self.opt.is_source_stream and self.opt.is_auto_restart:
                     print("\nStopping the system for a while (3 seconds delay) . . .")
                     time.sleep(3)
                     # print("\nTry reading the stream input again . . .")
