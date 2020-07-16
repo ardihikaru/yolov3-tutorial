@@ -26,7 +26,7 @@ class YOLOApp(InputReader):
                 except:
                     print("\nUnable to communicate with the Streaming. Restarting . . .")
                     # The following frees up resources and closes all windows
-                    self._stop_stream_listener()
+                    # self._stop_stream_listener()
 
     def _detect_from_folder(self):
         for i in range(len(self.dataset)):
@@ -63,12 +63,20 @@ class YOLOApp(InputReader):
 
             except Exception as e:
                 # print(" ---- e:", e)
-                if not self.opt.auto_restart:
-                    print("\nStopping the system. . .")
-                    time.sleep(7)
+
+                if not self.opt.is_auto_restart:
+                    print("\nStopping the system (3 seconds delay) . . .")
+                    time.sleep(3)
                     self.is_running = False
+                # Read this code ONLY when (1) is streaming through (2) RTSP/RTMP protocol
+                elif self.opt.is_source_stream and self.opt.is_auto_restart:
+                    print("\nStopping the system for a while (3 seconds delay) . . .")
+                    time.sleep(3)
+                    # print("\nTry reading the stream input again . . .")
+                    # self.is_running = False
                 else:
                     print("No more frame to show.")
+
                 break
 
     def _detection_handler(self, ret, img0, frame_id):

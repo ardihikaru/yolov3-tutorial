@@ -14,6 +14,8 @@ class YOLOv3(YOLOFunctions):
         self.classify = False
         self.total_proc_frames = 0
 
+        self.vid_path, self.vid_writer = None, None
+
         # (320, 192) or (416, 256) or (608, 352) for (height, width)
         self.img_size = (320, 192) if ONNX_EXPORT else opt.img_size
 
@@ -56,26 +58,27 @@ class YOLOv3(YOLOFunctions):
         self._save_results(img, None, frame_id, is_raw=True)
 
         # Padded resize
-        image = letterbox(img, new_shape=self.img_size)[0]
+        image4yolo = letterbox(img, new_shape=self.img_size)[0]
 
         # Convert
-        image = image[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-        image = np.ascontiguousarray(image, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
-        image /= 255.0  # 0 - 255 to 0.0 - 1.0
+        image4yolo = image4yolo[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+        image4yolo = np.ascontiguousarray(image4yolo, dtype=np.float16 if self.half else np.float32)  # uint8 to fp16/fp32
+        image4yolo /= 255.0  # 0 - 255 to 0.0 - 1.0
 
         # Start processing image
         print("[%s] Received frame-%d" % (get_current_time(), int(frame_id)))
-        self._process_detection(image, img, frame_id)
+        self._process_detection(image4yolo, img, frame_id)
 
-    def _process_detection(self, img, im0s, this_frame_id):
+    def _process_detection(self, image4yolo, im0s, this_frame_id):
+
         # Get detections
         ts_det = time.time()
-        img_torch = torch.from_numpy(img) #.to(self.device)
-        img = img_torch.to(self.device)
-        if img.ndimension() == 3:
-            img = img.unsqueeze(0)
+        img_torch = torch.from_numpy(image4yolo) #.to(self.device)
+        image4yolo = img_torch.to(self.device)
+        if image4yolo.ndimension() == 3:
+            image4yolo = image4yolo.unsqueeze(0)
         try:
-            self.pred = self.model(img)[0]
+            self.pred = self.model(image4yolo)[0]
         except Exception as e:
             print("~~ EEROR: ", e)
         t_inference = (time.time() - ts_det) * 1000  # to ms
@@ -97,7 +100,7 @@ class YOLOv3(YOLOFunctions):
 
         # Apply Classifier: Default DISABLED
         if self.classify:
-            self.pred = apply_classifier(self.pred, self.modelc, img, im0s)
+            self.pred = apply_classifier(self.pred, self.modelc, image4yolo, im0s)
 
         # Process detections
         '''
@@ -108,10 +111,10 @@ class YOLOv3(YOLOFunctions):
 
         try:
             for i, det in enumerate(self.pred):  # detections per image
-                self.str_output += '%gx%g ' % img.shape[2:]  # print string
+                self.str_output += '%gx%g ' % image4yolo.shape[2:]  # print string
                 if det is not None and len(det):
                     # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0s.shape).round()
+                    det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], im0s.shape).round()
 
                     self._manage_detection_results(det, im0s, this_frame_id)
 
@@ -136,11 +139,18 @@ class YOLOv3(YOLOFunctions):
             idx_detected += 1
 
             # Save cropped files
-            self._save_cropped_img(xyxy, original_img, idx_detected, self.names[int(cls)], this_frame_id,
-                                   self.opt.file_ext)
+            try:
+                self._save_cropped_img(xyxy, original_img, idx_detected, self.names[int(cls)], this_frame_id,
+                                       self.opt.file_ext)
+            except Exception as e:
+                print(" ^^^ ERROR e: ", e)
 
             # Save bbox information
-            self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf),2)))
+            try:
+                self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf),2)))
+
+            except Exception as e:
+                print(" ^^^ ERROR store e: ", e)
 
             this_bbox = {
                 "obj_idx": idx_detected,
