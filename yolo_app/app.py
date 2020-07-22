@@ -2,6 +2,7 @@ from yolo_app.extra_modules.input_reader import InputReader
 import time
 from yolo_app.components.utils.utils import get_current_time
 from yolo_app.detection_algorithms.yolo_v3 import YOLOv3 as YOLO
+import cv2 as cv
 
 
 class YOLOApp(InputReader):
@@ -9,6 +10,8 @@ class YOLOApp(InputReader):
         super().__init__(opt)
         self.yolo = YOLO(self.opt)
         self.opt = opt
+
+        self.window_name = "YOLOv3"
 
     def run(self):
         print("[%s] YOLO App is running now ..." % get_current_time())
@@ -25,8 +28,6 @@ class YOLOApp(InputReader):
                     self._detect_from_video_streaming()
                 except:
                     print("\nUnable to communicate with the Streaming. Restarting . . .")
-                    # The following frees up resources and closes all windows
-                    # self._stop_stream_listener()
 
     def _detect_from_folder(self):
         for i in range(len(self.dataset)):
@@ -46,7 +47,28 @@ class YOLOApp(InputReader):
 
         print("\n[%s] No more frame to show." % get_current_time())
 
+    def _initialize_visualizer(self):
+        if self.opt.cv_out:
+            # Set Window
+            cv.namedWindow(self.window_name, cv.WND_PROP_FULLSCREEN)
+            cv.moveWindow(self.window_name, 0, 0)
+
+            # Set Window Position
+            cv.moveWindow(self.window_name, 0, 0)
+
+            # Set Window Size
+            width = self.opt.window_size_height
+            height = self.opt.window_size_width
+            cv.resizeWindow(self.window_name, width, height)
+
+    def _show_visual_results(self, frame):
+        # show the frame with BBox
+        cv.imshow(self.window_name, frame)
+        cv.waitKey(1)
+
     def _detect_from_video_streaming(self):
+        self._initialize_visualizer()
+
         received_frame_id = 0
         while (self.cap.more()) and self.is_running:
             received_frame_id += 1
@@ -58,12 +80,12 @@ class YOLOApp(InputReader):
 
                 is_break = self._detection_handler(ret, frame, received_frame_id)
 
+                self._show_visual_results(frame)
+
                 if is_break:
                     break
 
-            except Exception as e:
-                # print(" ---- e:", e)
-
+            except:
                 if not self.opt.is_auto_restart:
                     print("\nStopping the system (3 seconds delay) . . .")
                     time.sleep(3)
@@ -72,8 +94,6 @@ class YOLOApp(InputReader):
                 elif self.opt.is_source_stream and self.opt.is_auto_restart:
                     print("\nStopping the system for a while (3 seconds delay) . . .")
                     time.sleep(3)
-                    # print("\nTry reading the stream input again . . .")
-                    # self.is_running = False
                 else:
                     print("No more frame to show.")
 
