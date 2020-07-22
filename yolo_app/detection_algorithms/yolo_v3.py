@@ -10,7 +10,7 @@ class YOLOv3(YOLOFunctions):
     def __init__(self, opt):
         super().__init__(opt)
         self.opt = opt
-        self.str_output = ""
+        # self.str_output = ""
         self.classify = False
         self.total_proc_frames = 0
 
@@ -51,14 +51,14 @@ class YOLOv3(YOLOFunctions):
 
         self.__get_names_colors()
 
-    def detect(self, img, frame_id):
+    def detect(self, raw_img, frame_id):
         print("\n[%s] Starting YOLOv3 for frame-%s" % (get_current_time(), frame_id))
 
         # DO THE DETECTION HERE!
-        self._save_results(img, None, frame_id, is_raw=True)
+        self._save_results(raw_img, frame_id, is_raw=True)
 
         # Padded resize
-        image4yolo = letterbox(img, new_shape=self.img_size)[0]
+        image4yolo = letterbox(raw_img, new_shape=self.img_size)[0]
 
         # Convert
         image4yolo = image4yolo[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
@@ -67,9 +67,9 @@ class YOLOv3(YOLOFunctions):
 
         # Start processing image
         print("[%s] Received frame-%d" % (get_current_time(), int(frame_id)))
-        self._process_detection(image4yolo, img, frame_id)
+        self._process_detection(image4yolo, raw_img, frame_id)
 
-    def _process_detection(self, image4yolo, im0s, this_frame_id):
+    def _process_detection(self, image4yolo, raw_img, this_frame_id):
 
         # Get detections
         ts_det = time.time()
@@ -91,7 +91,7 @@ class YOLOv3(YOLOFunctions):
             self.pred = self.pred.float()
 
         # Apply NMS: Non-Maximum Suppression
-        ts_nms = time.time()
+        # ts_nms = time.time()
         # to Removes detections with lower object confidence score than 'conf_thres'
         self.pred = non_max_suppression(self.pred, self.opt.conf_thres, self.opt.iou_thres,
                                         classes=self.opt.classes,
@@ -100,7 +100,7 @@ class YOLOv3(YOLOFunctions):
 
         # Apply Classifier: Default DISABLED
         if self.classify:
-            self.pred = apply_classifier(self.pred, self.modelc, image4yolo, im0s)
+            self.pred = apply_classifier(self.pred, self.modelc, image4yolo, raw_img)
 
         # Process detections
         '''
@@ -111,25 +111,29 @@ class YOLOv3(YOLOFunctions):
 
         try:
             for i, det in enumerate(self.pred):  # detections per image
-                self.str_output += '%gx%g ' % image4yolo.shape[2:]  # print string
                 if det is not None and len(det):
                     # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], im0s.shape).round()
+                    det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], raw_img.shape).round()
 
-                    self._manage_detection_results(det, im0s, this_frame_id)
+                    # Export results: Raw image OR BBox image OR Crop image OR BBox txt
+                    if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
+                        self._manage_detection_results(det, raw_img, this_frame_id)
 
         except Exception as e:
-            print("ERROR Pred: ", e)
+            print("ERROR Plotting: ", e)
 
-    def _manage_detection_results(self, det, im0, this_frame_id):
-        original_img = im0.copy()
+    def _manage_detection_results(self, det, raw_img, this_frame_id):
+        """
+            A function to do optional actions: Save cropped file, bbox in txt, bbox images
+        """
+        t0_copy_image = time.time()
+        original_img = raw_img.copy()
+        t1_copy_image = (time.time() - t0_copy_image) * 1000  # to ms
+        print('[%s] Latency of copying image data of frame-%s (%.3f ms)' % (get_current_time(), str(this_frame_id),
+                                                                            t1_copy_image))
 
-        # Print results
-        for c in det[:, -1].unique():
-            n = (det[:, -1] == c).sum()  # detections per class
-            self.str_output += '%g %ss, ' % (n, self.names[int(c)])  # add to string
-
-        # Write results
+        # TODO: We can do the parallel computation to enhance the performance further!
+        # Draw BBox information into images
         idx_detected = 0
         bbox_data = []
         for *xyxy, conf, cls in det:
@@ -139,18 +143,10 @@ class YOLOv3(YOLOFunctions):
             idx_detected += 1
 
             # Save cropped files
-            try:
-                self._save_cropped_img(xyxy, original_img, idx_detected, self.names[int(cls)], this_frame_id,
-                                       self.opt.file_ext)
-            except Exception as e:
-                print(" ^^^ ERROR e: ", e)
-
+            self._save_cropped_img(xyxy, original_img, idx_detected, self.names[int(cls)], this_frame_id,
+                                   self.opt.file_ext)
             # Save bbox information
-            try:
-                self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf),2)))
-
-            except Exception as e:
-                print(" ^^^ ERROR store e: ", e)
+            self._safety_store_txt(xyxy, this_frame_id, self.names[int(cls)], str(round(float(conf), 2)))
 
             this_bbox = {
                 "obj_idx": idx_detected,
@@ -159,10 +155,10 @@ class YOLOv3(YOLOFunctions):
                 "color": [str(color) for color in this_color]
             }
             bbox_data.append(this_bbox)
-            plot_one_box(xyxy, im0, label=this_label, color=this_color)
+            plot_one_box(xyxy, raw_img, label=this_label, color=this_color)
 
         # Save BBox image
-        self._save_results(im0, None, this_frame_id)
+        self._save_results(raw_img, this_frame_id)
 
     def __load_weight(self):
         # Load weights
