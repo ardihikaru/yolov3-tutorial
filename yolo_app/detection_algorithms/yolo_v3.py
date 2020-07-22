@@ -10,7 +10,6 @@ class YOLOv3(YOLOFunctions):
     def __init__(self, opt):
         super().__init__(opt)
         self.opt = opt
-        # self.str_output = ""
         self.classify = False
         self.total_proc_frames = 0
 
@@ -116,7 +115,8 @@ class YOLOv3(YOLOFunctions):
                     det[:, :4] = scale_coords(image4yolo.shape[2:], det[:, :4], raw_img.shape).round()
 
                     # Export results: Raw image OR BBox image OR Crop image OR BBox txt
-                    if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
+                    # if self.opt.dump_raw_img or self.opt.dump_bbox_img or self.opt.dump_crop_img or self.opt.save_txt:
+                    if self.opt.cv_out:
                         self._manage_detection_results(det, raw_img, this_frame_id)
 
         except Exception as e:

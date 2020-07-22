@@ -7,6 +7,8 @@ if __name__ == "__main__":
 
     # Enable CV out if enabled!
     parser.add_argument('--enable-cv-out', dest='cv_out', action='store_true', help="Enable/disable CV Out results")
+    parser.add_argument('--window-size-height', type=int, default=1920, help="Window size: Height")
+    parser.add_argument('--window-size-width', type=int, default=1080, help="Window size: Width")
 
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
