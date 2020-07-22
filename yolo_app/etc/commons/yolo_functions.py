@@ -1,4 +1,4 @@
-from yolo_app.components.utils.utils import torch2numpy, mbboxlist2dict
+from yolo_app.components.utils.utils import torch2numpy, get_current_time
 from yolo_app.etc.commons.opencv_helpers import crop_image, np_xyxy2xywh, save_txt
 import cv2
 from datetime import datetime
@@ -24,35 +24,34 @@ class YOLOFunctions:
         os.makedirs(self.txt_bbox_path)
 
     def _save_cropped_img(self, xyxy, im0, idx, cls, frame_id, ext):
-        if self.opt.dump_crop_img:
-            numpy_xyxy = torch2numpy(xyxy, int)
-            xywh = np_xyxy2xywh(numpy_xyxy)
-            crop_save_path = self.crop_img_path + "frame-%s_[cls=%s][idx=%s]%s" % (str(frame_id), str(idx), cls, ext)
-            crop_image(crop_save_path, im0, xywh)
+        try:
+            if self.opt.dump_crop_img:
+                numpy_xyxy = torch2numpy(xyxy, int)
+                xywh = np_xyxy2xywh(numpy_xyxy)
+                crop_save_path = self.crop_img_path + "frame-%s_[cls=%s][idx=%s]%s" % (
+                str(frame_id), str(idx), cls, ext)
+                crop_image(crop_save_path, im0, xywh)
+        except:
+            print("\n[%s] Unable to perform crop image in frame-%s" % (get_current_time(), str(frame_id)))
 
-    def _save_results(self, im0, vid_cap, frame_id, is_raw=False):
-        if is_raw:
-            frame_save_path = self.raw_img_path + "frame-%s.jpg" % str(frame_id)
-            if self.opt.dump_raw_img:
-                cv2.imwrite(frame_save_path, im0)
-        else:
-            frame_save_path = self.bbox_img_path + "frame-%s.jpg" % str(frame_id)
-            if self.opt.dump_bbox_img:
-                cv2.imwrite(frame_save_path, im0)
+    def _save_results(self, img, frame_id, is_raw=False):
+        if self.opt.dump_bbox_img:
+            if is_raw:
+                print(" --- masuk IS RAW ...")
+                frame_save_path = self.raw_img_path + "frame-%s.jpg" % str(frame_id)
+                print(" --- RAW frame_save_path:", frame_save_path)
+                if self.opt.dump_raw_img:
+                    cv2.imwrite(frame_save_path, img)
             else:
-                if self.vid_path != self.opt.source:  # new video
-                    self.vid_path = self.opt.source
-                    if isinstance(self.vid_writer, cv2.VideoWriter):
-                        self.vid_writer.release()  # release previous video writer
+                print(" --- masuk IS NOT RAW ...")
+                frame_save_path = self.bbox_img_path + "frame-%s.jpg" % str(frame_id)
 
-                    fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                    w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                    h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                    self.vid_writer = cv2.VideoWriter(self.save_path,
-                                                      cv2.VideoWriter_fourcc(*self.opt.fourcc), fps, (w, h))
-                self.vid_writer.write(im0)
+            cv2.imwrite(frame_save_path, img)
 
     def _safety_store_txt(self, xyxy, frame_id, cls, conf_score):
-        txt_save_path = self.txt_bbox_path + "frame-%s" % str(frame_id)
-        if self.opt.save_txt:
-            save_txt(txt_save_path, self.opt.txt_format, bbox_xyxy=xyxy, cls=cls, conf=conf_score)
+        try:
+            txt_save_path = self.txt_bbox_path + "frame-%s" % str(frame_id)
+            if self.opt.save_txt:
+                save_txt(txt_save_path, self.opt.txt_format, bbox_xyxy=xyxy, cls=cls, conf=conf_score)
+        except:
+            print("\n[%s] Unable to perform crop image in frame-%s" % (get_current_time(), str(frame_id)))

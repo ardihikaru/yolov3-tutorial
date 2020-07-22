@@ -5,14 +5,17 @@ from yolo_app.app import YOLOApp
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    # To define input source type: "folder" or "stream"; The default is "stream"
-    parser.add_argument('--no-cv-out', dest='cv_out', help="Enable/disable CV Out results")
-    parser.set_defaults(cv_out=True)
+    # Enable CV out if enabled!
+    parser.add_argument('--enable-cv-out', dest='cv_out', action='store_true', help="Enable/disable CV Out results")
+    parser.add_argument('--window-size-height', type=int, default=1920, help="Window size: Height")
+    parser.add_argument('--window-size-width', type=int, default=1080, help="Window size: Width")
 
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
-    parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+    # parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
+    # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
+    parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
     parser.add_argument('--conf-thres', type=float, default=0.1, help='object confidence threshold')
     # parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
     # parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
@@ -43,12 +46,15 @@ if __name__ == "__main__":
     parser.add_argument("--file_ext", type=str, default=".png", help="source folder extension (png, jpg, ...)")
 
     # parser.add_argument("--source", type=str, default="data/images/sample-1-frame/", help="source")
-    parser.add_argument("--source", type=str, default="data/images/sample-4-frames/", help="source")
-    # parser.add_argument("--source", type=str, default="data/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
+    # parser.add_argument("--source", type=str, default="data/images/sample-4-frames/", help="source")
+    parser.add_argument("--source", type=str, default="data/videos/customTest_MIRC-Roadside-5s.mp4", help="source")
     # parser.add_argument("--source", type=str, default="rtmp://140.113.86.92/live/demo", help="source")
 
     # To define the ROOT location to save any output results: Images, txt, graph, etc.
     parser.add_argument("--output", type=str, default="outputs/", help="path to export any results")
+
+    # To enable/disable auto restart (Input as Video file or Streaming with RTSP/RTMP)
+    parser.add_argument('--auto-restart', dest='is_auto_restart', action='store_true', help="To automatically restart")
 
     # Saving raw images
     parser.add_argument('--dump-raw-img', dest='dump_raw_img', action='store_true',
@@ -63,7 +69,6 @@ if __name__ == "__main__":
     # Saving crop images
     parser.add_argument('--dump-crop-img', dest='dump_crop_img', action='store_true',
                         help="Enable/disable crop images dump")
-    # parser.set_defaults(crop_img_dump=True)
 
     # Saved txt format: # Source https://github.com/Cartucho/mAP#running-the-code
     parser.add_argument('--txt_format', type=str, default='cartucho', help='Output Txt Format')
