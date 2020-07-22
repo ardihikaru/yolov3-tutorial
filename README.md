@@ -16,9 +16,9 @@ Tutorial how to use YOLOv3
     - [x] Save raw images into a specific folder: `./export/images_txt/<datetime>/raw/`
     - [x] Save bbox images into a specific folder: `./export/images_txt/<datetime>/bbox/`
     - [x] Save cropped (bbox) images into a specific folder: `./export/images_txt/<datetime>/crop/`
-    - [ ] Show real-time video: `Raw images` (OpenCV) 
-    - [ ] Show real-time video: `BBox images` (OpenCV) 
     - [x] Export bbox coordinates: `./export/images_txt/<datetime>/txt/`
+    - [x] Show real-time video: `Raw images` (OpenCV) 
+    - [x] Show real-time video: `BBox images` (OpenCV) 
     - [ ] Calculation of mAP
     - [ ] Documentation to train a custom dataset
 
@@ -52,6 +52,7 @@ Tutorial how to use YOLOv3
     - Input as `video file` or `video stream (RTSP/RTMP)`
         - Simple command: `$ python main.py`
         - Change video file source: `$ python main.py --source "data/videos/customTest_MIRC-Roadside-5s.mp4"`
+        - Change CV Out Window size: `$ python main.py --window-size-height 1920 --window-size-width 1080`
         - Change video stream (RTMP) source: `$ python main.py --source "rtmp://<your_ip>"`
         - Change video stream (RTSP) source: `$ python main.py --source "rtsp://<your_ip>"`
         - Stop after processing N frames (e.g.: `N=2`): `$ python main.py --is_limited --max_frames 2`
