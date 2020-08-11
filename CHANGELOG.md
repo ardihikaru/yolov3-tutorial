@@ -1,3 +1,8 @@
+## 1.2.1 (八月 12, 2020)
+  - Merge branch 'feature/test' into develop
+  - Add dummy file
+  - Merge branch 'release-1.2' into develop
+
 ## 1.2.0 (七月 22, 2020)
   - Merge branch 'feature/readme' into develop
   - Updated readme
