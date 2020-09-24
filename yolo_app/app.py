@@ -69,18 +69,31 @@ class YOLOApp(InputReader):
     def _detect_from_video_streaming(self):
         self._initialize_visualizer()
 
+        print("\n self.opt.skip_frames = %s" % str(self.opt.skip_frames))
+
         received_frame_id = 0
+        skip_count = -1
         while (self.cap.more()) and self.is_running:
             received_frame_id += 1
+            skip_count += 1
             # ret = a boolean return value from getting the frame,
             # frame = the current frame being projected in the video
             try:
+                is_break = False
                 ret = True
                 frame = self.cap.read()
 
-                is_break = self._detection_handler(ret, frame, received_frame_id)
+                # try skipping frames
+                if self.opt.skip_frames > 0 and received_frame_id > 1 and skip_count <= self.opt.skip_frames:
+                    # skip this frame
+                    print("\n>>> Skipping frame-%s; Current `skip_count=%s`" % (str(received_frame_id), str(skip_count)))
+                else:
+                    is_break = self._detection_handler(ret, frame, received_frame_id)
+                    self._show_visual_results(frame)
 
-                self._show_visual_results(frame)
+                # reset skipping frames
+                if self.opt.skip_frames > 0 and skip_count > self.opt.skip_frames:
+                    skip_count = 0
 
                 if is_break:
                     break
