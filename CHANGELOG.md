@@ -1,3 +1,9 @@
+## 1.3 (September 24, 2020)
+  - Merge branch 'feature/skip-frames' into develop
+  - add doc how to skip frames
+  - add new feature: skipping every n frames
+  - Merge branch 'release/1.2.1-coba' into develop
+
 ## 1.2.1 (八月 12, 2020)
   - Merge branch 'feature/test' into develop
   - Add dummy file
