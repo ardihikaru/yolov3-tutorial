@@ -10,6 +10,8 @@ if __name__ == "__main__":
     parser.add_argument('--window-size-height', type=int, default=1920, help="Window size: Height")
     parser.add_argument('--window-size-width', type=int, default=1080, help="Window size: Width")
 
+    parser.add_argument("--skip-frames", type=int, default=0, help="Skip frames; default is 0 (disabled)")
+
     # YOLOv3 default configuration
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
