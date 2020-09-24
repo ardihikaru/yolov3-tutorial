@@ -58,7 +58,7 @@ Tutorial how to use YOLOv3
         - Stop after processing N frames (e.g.: `N=2`): `$ python main.py --is_limited --max_frames 2`
         - Export all the results (Raw images, bbox images, cropped images/bbox img, bbox information): 
             `$ python main.py --dump-raw-img --dump-bbox-img --dump-crop-img --save-txt"`
-    
+        - Skip every n frames (i.e. skip every `2 frames`): `$ python main.py --skip-frames 2 --source "data/videos/customTest_MIRC-Roadside-5s.mp4"`
 
 ### Contributors 
 1. Muhammad Febrian Ardiansyah 
