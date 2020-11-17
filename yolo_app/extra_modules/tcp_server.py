@@ -1,8 +1,6 @@
 import cv2
 import numpy
 import socket
-import time
-from yolo_app.etc.commons.util import get_current_time
 
 
 class TCPServer(object):
@@ -15,15 +13,19 @@ class TCPServer(object):
         self._is_running = True
         self.frame_id = 0
         self._extract_url_info()
+        self._socket = None
 
     def initialize_camera_source_reader(self):
         print(" *** TCP Source Info; Host={}; Port={}".format(self._tcp_host, self._tcp_port))
 
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((self._tcp_host, self._tcp_port))
-        s.listen(True)
-        self.conn, self.addr = s.accept()
+        self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._socket.bind((self._tcp_host, self._tcp_port))
+        self._socket.listen(True)
+        self.conn, self.addr = self._socket.accept()
+
+    def kill_server(self):
+        self._socket.close()
 
     def _extract_url_info(self):
         # extract `URL` to collect `host` and `port`
