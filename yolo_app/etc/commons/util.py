@@ -1,3 +1,5 @@
+from datetime import datetime
+
 
 def find_point(xyxy, xy):
     # if (x1 < x < x2 and
@@ -8,6 +10,11 @@ def find_point(xyxy, xy):
         return True
     else:
         return False
+
+
+def get_current_time():
+    return datetime.now().strftime("%H:%M:%S")
+
 
 # # find point
 # xyxy = [1280, 1080, 1920, 540]

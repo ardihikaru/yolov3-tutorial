@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# ignore external resources
+data/5g-dive/
+data/out1.png
+outputs/
+
 # C extensions
 *.so
 
