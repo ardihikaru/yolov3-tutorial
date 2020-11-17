@@ -1,3 +1,12 @@
+## 1.4.0 (十一月 17, 2020)
+  - Merge pull request #2 from ardihikaru/bugfix/tcp-source-frame-id
+  - updates: - auto restart - wrong position for break condition
+  - Merge pull request #1 from ardihikaru/feature/tcp-source
+  - add TCP Server and tested
+  - remove unused file
+  - add config files from `eagleeye` project
+  - Merge branch 'release/1.3' into develop
+
 ## 1.3 (September 24, 2020)
   - Merge branch 'feature/skip-frames' into develop
   - add doc how to skip frames
