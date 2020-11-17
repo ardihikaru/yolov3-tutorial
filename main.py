@@ -27,17 +27,17 @@ if __name__ == "__main__":
     parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
-    # parser.add_argument('--names', type=str, default='./yolo_app/components/data/coco.names', help='*.names path')
-    parser.add_argument('--names', type=str, default='./yolo_app/components/data/5gd.names', help='*.names path')
+    parser.add_argument('--names', type=str, default='./yolo_app/components/data/coco.names', help='*.names path')
+    # parser.add_argument('--names', type=str, default='./yolo_app/components/data/5gd.names', help='*.names path')
 
     # Load YOLO config file
-    parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolo-obj-v5.cfg', help='*.cfg path')
-    # parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3.cfg', help='*.cfg path')
+    # parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolo-obj-v5.cfg', help='*.cfg path')
+    parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3.cfg', help='*.cfg path')
     # parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3-tiny.cfg', help='*.cfg path')
 
     # Load weights
-    parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/TM-07.weights',
-    # parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3.weights',
+    # parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/TM-07.weights',
+    parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3.weights',
     # parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3-tiny.weights',
                         help='path to weights file')
 
