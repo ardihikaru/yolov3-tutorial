@@ -17,7 +17,7 @@ if __name__ == "__main__":
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
     # parser.add_argument("--img_size", type=int, default=832, help="size of each image dimension")
     # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
-    parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
+    parser.add_argument("--img_size", type=int, default=608, help="size of each image dimension")
     parser.add_argument('--conf-thres', type=float, default=0.1, help='object confidence threshold')
     # parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
     # parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
@@ -27,14 +27,17 @@ if __name__ == "__main__":
     parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
-    parser.add_argument('--names', type=str, default='./yolo_app/components/data/coco.names', help='*.names path')
+    # parser.add_argument('--names', type=str, default='./yolo_app/components/data/coco.names', help='*.names path')
+    parser.add_argument('--names', type=str, default='./yolo_app/components/data/5gd.names', help='*.names path')
 
     # Load YOLO config file
-    parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3.cfg', help='*.cfg path')
+    parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolo-obj-v5.cfg', help='*.cfg path')
+    # parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3.cfg', help='*.cfg path')
     # parser.add_argument('--cfg', type=str, default='./yolo_app/components/cfg/yolov3-tiny.cfg', help='*.cfg path')
 
     # Load weights
-    parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3.weights',
+    parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/TM-07.weights',
+    # parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3.weights',
     # parser.add_argument('--weights', type=str, default='./yolo_app/components/weights/yolov3-tiny.weights',
                         help='path to weights file')
 
@@ -42,6 +45,15 @@ if __name__ == "__main__":
     parser.add_argument('--source-type-folder', action='store_false', dest='is_source_stream',
                         help="Type of source data (Folder or Stream)")
     parser.set_defaults(is_source_stream=True)
+
+    # If `is_source_stream` is True, then check also parameter `is_tcp` (default: False)
+    parser.add_argument('--is-tcp', action='store_true', dest='is_tcp',
+                        help="Define whether the stream source is using TCP or not")
+    parser.set_defaults(is_tcp=False)
+    parser.add_argument("--tcp-img-width", type=int, default=1920, help="TCP Image Width")
+    parser.add_argument("--tcp-img-height", type=int, default=1080, help="TCP Image Height")
+    # parser.add_argument("--zmq-host", type=str, default="localhost", help="ZMQ Hostname")
+    # parser.add_argument("--zmq-port", type=str, default="5550", help="ZMQ Host Port")
 
     # Used only when is_source_stream=True (Stream), otherwise it's not used
     parser.add_argument("--source_folder_prefix", type=str, default="out", help="source folder prefix")
@@ -64,7 +76,7 @@ if __name__ == "__main__":
     # parser.set_defaults(raw_img_dump=True)
 
     # Saving BBox images
-    parser.add_argument('--dump-bbox-img-', dest='dump_bbox_img', action='store_true',
+    parser.add_argument('--dump-bbox-img', dest='dump_bbox_img', action='store_true',
                         help="Enable/disable BBox images dump")
     # parser.set_defaults(bbox_img_dump=True)
 
