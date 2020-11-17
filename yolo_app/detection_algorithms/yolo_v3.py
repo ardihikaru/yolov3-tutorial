@@ -90,12 +90,12 @@ class YOLOv3(YOLOFunctions):
             self.pred = self.pred.float()
 
         # Apply NMS: Non-Maximum Suppression
-        # ts_nms = time.time()
+        ts_nms = time.time()
         # to Removes detections with lower object confidence score than 'conf_thres'
         self.pred = non_max_suppression(self.pred, self.opt.conf_thres, self.opt.iou_thres,
                                         classes=self.opt.classes,
                                         agnostic=self.opt.agnostic_nms)
-        # print('\n # Total Non-Maximum Suppression (NMS) time: (%.3fs)' % (time.time() - ts_nms))
+        print('\n # Total Non-Maximum Suppression (NMS) time: (%.3fs)' % (time.time() - ts_nms))
 
         # Apply Classifier: Default DISABLED
         if self.classify:
