@@ -1,3 +1,12 @@
+## 1.4.1 (十一月 17, 2020)
+  - set value with default values
+  - Merge branch 'release/1.4'
+  - Merge branch 'release/1.3'
+  - Merge branch 'release/1.2.1-coba'
+  - Merge branch 'release-1.2'
+  - Merge branch 'release-1.1'
+  - Merge branch 'release-1.0'
+
 ## 1.4.0 (十一月 17, 2020)
   - Merge pull request #2 from ardihikaru/bugfix/tcp-source-frame-id
   - updates: - auto restart - wrong position for break condition
