@@ -85,6 +85,8 @@ class YOLOApp(InputReader):
     # 1: python main.py --source "localhost:5549" --is_limited --max_frames 50 --enable-cv-out --is-tcp
     # 2: python main.py --source "localhost:5549" --is_limited --enable-cv-out --is-tcp
     # 3: python main.py --source "localhost:5549" --enable-cv-out --is-tcp
+    # 4 (Skip frame): python main.py --source "localhost:5549" --enable-cv-out --is-tcp --skip-frames 2
+    # 5 (Skip frame + auto restart): python main.py --source "localhost:5549" --enable-cv-out --is-tcp --skip-frames 2 --auto-restart
     def _detect_from_tcp_source(self):
         self._tcp_server.initialize_camera_source_reader()
         self._initialize_visualizer()
@@ -100,15 +102,7 @@ class YOLOApp(InputReader):
             # frame = the current frame being projected in the video
             try:
                 is_break = False
-                # ret = True
-                # frame = self.cap.read()
-
-                ret, frame_id, t0_zmq_source, frame = self._tcp_server.get_image(self.frame_id)
-                t1_zmq_source = (time.time() - t0_zmq_source) * 1000
-                self.frame_id = int(frame_id)
-
-                print('\n[%s] Communication Latency of %s for frame-%s (%.3f ms)' % (
-                    get_current_time(), "[Receiving Image with IMAGEZMQ]", str(self.frame_id), t1_zmq_source))
+                ret, frame_id, t0_zmq_source, frame = self._tcp_server.get_image(received_frame_id)
 
                 # try skipping frames
                 if self.opt.skip_frames > 0 and received_frame_id > 1 and skip_count <= self.opt.skip_frames:
@@ -125,20 +119,20 @@ class YOLOApp(InputReader):
                 if is_break:
                     break
 
-            except:
+            except Exception as e:
                 if not self.opt.is_auto_restart:
-                    print("\nStopping the system (3 seconds delay) . . .")
+                    print("\nStopping the system (3 seconds delay); Reason={}".format(e))
                     time.sleep(3)
                     self.is_running = False
+                    break
                 # Read this code ONLY when: 1) is streaming through 2) RTSP/RTMP protocol
                 elif self.opt.is_source_stream and self.opt.is_auto_restart:
-                    print("\nStopping the system for a while (3 seconds delay) . . .")
+                    print("\nRestarting the system for a while (3 seconds delay); Reason={}".format(e))
                     time.sleep(3)
+                    self._tcp_server.kill_server()
                     self._tcp_server.initialize_camera_source_reader()
                 else:
                     print("No more frame to show.")
-
-                break
 
     def _detect_from_video_streaming(self):
         self._initialize_visualizer()
